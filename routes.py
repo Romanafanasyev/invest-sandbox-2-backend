@@ -93,6 +93,7 @@ def buy_stock():
     quantity = data.get('quantity')
 
     if not user_id or not stock_id or not quantity:
+        print(user_id, stock_id, quantity, "Something is not there")
         return jsonify({'error': 'User ID, stock ID, and quantity are required'}), 400
 
     session = Session()
@@ -104,11 +105,13 @@ def buy_stock():
         return jsonify({'error': 'User or stock not found'}), 404
 
     if stock.quantity < quantity:
+        print(stock.quantity, "<", quantity)
         session.close()
         return jsonify({'error': 'Not enough stocks available to buy'}), 400
 
     total_cost = stock.price * quantity
     if user.balance < total_cost:
+        print(user.balance, "<", total_cost)
         session.close()
         return jsonify({'error': 'Insufficient balance'}), 400
 
