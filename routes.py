@@ -125,6 +125,11 @@ def buy_stock():
         session.close()
         return jsonify({'error': 'Not enough stocks available to buy'}), 400
 
+    # Check if quantity is positive
+    if quantity <= 0:
+        session.close()
+        return jsonify({'error': 'You can not buy this amount'}), 400
+
     # Check if the user has sufficient balance to make the purchase
     total_cost = stock.price * quantity
     if user.balance < total_cost:
@@ -174,6 +179,11 @@ def sell_stock():
         return jsonify({'error': 'User or stock not found'}), 404
 
     user_stock = session.query(UserStock).filter_by(user_id=user_id, stock_id=stock_id).first()
+
+    # Check if quantity is positive
+    if quantity <= 0:
+        session.close()
+        return jsonify({'error': 'You can not sell this amount'}), 400
 
     # Check if the user has enough stocks to sell
     if not user_stock or user_stock.bought_quantity < quantity:
